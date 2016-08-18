@@ -8,13 +8,21 @@ Nada    =0
 Fallo   =2
 Hundido =3
 
+#hay que verificar antes de poner el barco
 def poner_barcos_random(matriz, num_barcos)
-    for i in 1..num_barcos
-      poner_algo_en_matriz(matriz,
-                      generar_coordenadas_random(matriz),
-                      generar_coordenadas_random(matriz),
-                      Barco)
-    end
+  barcos_restantes = num_barcos
+  mostrar_tablero  = false
+
+  while barcos_restantes > 0
+   # no pedir sino poner
+   fila    = generar_coordenadas_random(matriz)
+   columna = generar_coordenadas_random(matriz)
+
+   if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
+      poner_algo_en_matriz(matriz, fila, columna, Barco)
+      barcos_restantes-=1
+   end
+  end
 end
 
 #generar una matriz del tamaño: largo x largo, rellena con ceros '0' que representan Nada
@@ -213,11 +221,8 @@ def poner_barcos(matriz, num_barcos)
   mostrar_tablero  = false
   while barcos_restantes > 0
 
-   fila_dada    = pedir_fila
-   columna_dada = pedir_columna
-
-   fila    = determinar_fila(fila_dada)
-   columna = determinar_columna(columna_dada)
+   fila    = fila_determinada
+   columna = columna_determinada
 
    if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
       poner_algo_en_matriz(matriz, fila, columna, Barco)
@@ -236,6 +241,16 @@ def poner_barcos(matriz, num_barcos)
      mostrar_matriz_dev(matriz)
    end
   end
+end
+
+def fila_determinada
+   fila_dada    = pedir_fila
+   return determinar_fila(fila_dada)
+end
+
+def columna_determinada
+   columna_dada = pedir_columna
+   return determinar_columna(columna_dada)
 end
 
 def pedir_algo(mensaje)
@@ -284,8 +299,14 @@ def jugando_jugador_2
     jugador_2_no_ha_fallado = true
 
     while jugador_2_no_ha_fallado
-      turno_jugador_2(matriz_jugador_1)
+      turno_computadora(matriz_jugador_1)
     end
+end
+
+def turno_jugador_1
+
+
+
 end
 
 def juego()
@@ -316,8 +337,11 @@ def mensaje_final(barcos_jugador_1, barcos_jugador_2)
   end
 end
 
+
+
+
 #------------------------------------------------------
-def inicio_dev
+#def inicio_dev
   system("clear")
   puts "Bienvenido al juego!"
 
@@ -330,8 +354,9 @@ def inicio_dev
   Nombre_jugador_1 = pedir_nombre
 
   num_barcos = pedir_num_barcos
+  puts "hola"
   poner_barcos_random(matriz_jugador_2, num_barcos)
-
+  puts "hey"
   system("clear")
   puts "Quieres poner tus barcos aleatoriamente? s/n"
   system("stty raw -echo")
@@ -347,8 +372,9 @@ def inicio_dev
     poner_barcos(matriz_jugador_1, num_barcos)
     puts "pusiste todos tus barcos"
   end
-end
+#end
 
+#inicio_dev
 
 
 
