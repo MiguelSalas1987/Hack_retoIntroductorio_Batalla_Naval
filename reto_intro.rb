@@ -1,12 +1,12 @@
 #valores dentro de la matriz
   #Barco: un barco
   #Nada: espacio vacío
-  #Fallo: disparo que falló
-  #Hundido: lugar donde se hundió un barco
-Barco   =1
-Nada    =0
-Fallo   =2
-Hundido =3
+  #Falli: disparo que falló
+  #Barco_Hundido: lugar donde se hundió un barco
+Barco            = 1
+Nada             = 0
+Ataque_Fallido   = 2
+Barco_Hundido    = 3
 
 #hay que verificar antes de poner el barco
 def poner_barcos_random(matriz, num_barcos)
@@ -61,7 +61,7 @@ def validar_num_barcos(num_barcos)
 end
 
 
-# cuenta la cantidad de algo en la matriz, por ejemplo Barcos, Fallos, Hundidos
+# cuenta la cantidad de algo en la matriz, por ejemplo Barcos, Ataque_Fallidos, Barco_Hundidos
 def contar_algo(matriz, algo)
   contador = 0
   for   a in 0..matriz.length-1
@@ -97,7 +97,7 @@ H= hundió un barco
 =end
 
 
-def ataque_fallo(matriz, fila, columna)
+def ataque_fallido(matriz, fila, columna)
     if matriz[fila][columna] == Barco
        false
     else
@@ -106,7 +106,7 @@ def ataque_fallo(matriz, fila, columna)
 end
 
 def ataque_valido(matriz, fila, columna)
-  if matriz[fila][columna] == Fallo  || matriz[fila][columna] == Hundido
+  if matriz[fila][columna] == Ataque_Fallido  || matriz[fila][columna] == Barco_Hundido
       false
   else
       true
@@ -221,6 +221,7 @@ def poner_barcos(matriz, num_barcos)
   mostrar_tablero  = false
   while barcos_restantes > 0
 
+   #pedir coordenadas
    fila    = fila_determinada
    columna = columna_determinada
 
@@ -287,36 +288,41 @@ def pedir_columna
   return columna
 end
 
-def jugando_jugador_1
+#hay que pasarle la matriz del otro jugador
+def jugando_jugador_1(matriz)
     jugador_1_no_ha_fallado = true
 
     while jugador_1_no_ha_fallado
-      jugador_1_no_ha_fallado = turno_jugador_1(matriz_jugador_2)
+      jugador_1_no_ha_fallado = turno_jugador_1(matriz)
     end
 end
 
-def jugando_jugador_2
+
+def turno_jugador_1(matriz)
+  #pedir coordenadas
+  fila    = fila_determinada
+  columna = columna_determinada
+
+  #esto es lo que devovería al final
+  return ataque_fallo(matriz, fila, columna)
+end
+
+def jugando_jugador_2(matriz)
     jugador_2_no_ha_fallado = true
 
     while jugador_2_no_ha_fallado
-      turno_computadora(matriz_jugador_1)
+      turno_computadora(matriz)
     end
 end
 
-def turno_jugador_1
-
-
-
-end
-
-def juego()
+def juego(matriz_jugador_1,matriz_jugador_2)
   nadie_ha_perdido = true
   while nadie_ha_perdido
 
-    jugando_jugador_1()
-    barcos_jugador_2 =contar_algo(matriz_jugador_1, Barco)
+    jugando_jugador_1(matriz_jugador_2)
+    barcos_jugador_2 =contar_algo(matriz_jugador_2, Barco)
 
-    jugando_jugador_2()
+    jugando_jugador_2(matriz_jugador_1)
     barcos_jugador_1 = contar_algo(matriz_jugador_1, Barco)
 
     if barcos_jugador_1 == 0 || barcos_jugador_2 == 0
