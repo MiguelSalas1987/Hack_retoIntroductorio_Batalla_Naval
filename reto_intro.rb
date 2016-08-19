@@ -122,7 +122,7 @@ end
 
 
 def validar_fila(fila)
-   if fila < "a" || fila > "j" || fila.length > 1
+   if fila < "k" || fila > "t" || fila.length > 1
       return false
    else
       return true
@@ -133,7 +133,7 @@ end
 #llamar validar_fila antes
 #recibe un string de largo 1
 def determinar_fila(fila_recibida)
-  letras    = ["a","b","c","d","e","f","g","h","i","j"]
+  letras    = ["k","l","m","n","o","p","q","r","s","t"]
  # numericos = [0,1,2,3,4,5,6,7,8,9]
    for i in 0..letras.length-1
      if fila_recibida == letras[i]
@@ -228,7 +228,7 @@ def pedir_fila
 
   intentos = 0
   until fila_correcta do
-    fila          = pedir_algo("una fila entre a y j.")
+    fila          = pedir_algo("una fila entre k y t.")
     fila_correcta = validar_fila(fila)
     intentos += 1
 
@@ -363,11 +363,11 @@ def juego(matriz_jugador_1,matriz_jugador_2)
     puts "Cambio de turno, en la funcion juego"
     puts "la matriz enemiga"
     puts
-    mostrar_matriz_dev(matriz_jugador_2)
+    mostrar_matriz(matriz_jugador_2, "J", true)
     puts
     puts "tu matriz"
     puts
-    mostrar_matriz_dev(matriz_jugador_1)
+    mostrar_matriz(matriz_jugador_1, "@", false)
     puts
 
     jugando_jugador_2(matriz_jugador_1)
@@ -393,26 +393,36 @@ def mensaje_final(barcos_jugador_1, barcos_jugador_2)
 end
 
 #        *funciones para mostrar el tablero
-def mostrar_matriz_dev(matriz, fila_letra)
+def mostrar_matriz(matriz, fila_letra, oculto)
 # recibe fila_letra como punto de inicio de las letras
 # para las filas '@' para comenzar desde 'A' y 'J'
 # para comenzar desde 'K'
   espacios=" "*20
 
+  if oculto == true
+    imprimir_leyenda_1
+  end
   print_cintillo_numerico(matriz.length)
   for i in 0..matriz.length-1
-
-
     print "#{espacios}#{fila_letra=fila_letra.next}"
     print "|"
     for x in 0..matriz[0].length-1
-      print "#{matriz[i][x]}|"
+      if oculto== true
+        print "#{ocultar_informacion(matriz[i][x])}|"
+      else
+        print "#{mostrar_informacion(matriz[i][x])}|"
+      end
     end
     print fila_letra
     puts
 
+
   end
   print_cintillo_numerico(matriz.length)
+
+  if oculto == false
+    imprimir_leyenda_2
+  end
 end
 
 def print_cintillo_numerico(largo)
@@ -424,6 +434,45 @@ def print_cintillo_numerico(largo)
   end
   puts
 end
+
+def ocultar_informacion(objetivo)
+  case objetivo
+    when Barco, Nada
+      return "?"
+    when Ataque_Fallido
+      return "X"
+    when Barco_Hundido
+      return "H"
+    end
+end
+
+def imprimir_leyenda_1
+  puts "  Leyenda:"
+  puts "  X  = ataque fallido"
+  puts "  ?  = zona desconocida"
+  puts "  H  = barco hundido"
+end
+
+def imprimir_leyenda_2
+  puts "  Leyenda:"
+  puts "  B    = barco"
+  puts "  ' '  = zona vacía"
+end
+
+def mostrar_informacion(objetivo)
+  case objetivo
+    when Barco
+      return "B"
+    when Nada
+      return "_"
+    when Ataque_Fallido
+      return "X"
+    when Barco_Hundido
+      return "H"
+    end
+end
+
+
 
 #        *funciones relativas al inicio del juego
 
@@ -501,13 +550,8 @@ def poner_barcos_random(matriz, num_barcos)
   end
 end
 #                          ****MAIN****
-a= generar_matriz 10
-mostrar_matriz_dev(a,"@")
-=begin
 
   system("clear")
   puts "Bienvenido al juego!"
   Nombre_jugador_1 = pedir_nombre
-
   inicio
-=end
