@@ -8,21 +8,6 @@ Nada             = 0
 Ataque_Fallido   = 2
 Barco_Hundido    = 3
 
-def poner_barcos_random(matriz, num_barcos)
-  barcos_restantes = num_barcos
-  mostrar_tablero  = false
-
-  while barcos_restantes > 0
-   # no pedir sino poner
-   fila    = generar_coordenadas_random(matriz)
-   columna = generar_coordenadas_random(matriz)
-
-   if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
-      poner_algo_en_matriz(matriz, fila, columna, Barco)
-      barcos_restantes-=1
-   end
-  end
-end
 
 #generar una matriz del tamaño: largo x largo, rellena con ceros '0' que representan Nada
 def generar_matriz(largo)
@@ -173,7 +158,7 @@ end
 
 
 def pedir_nombre
-  puts "Por favor ingresa su nombre"
+  puts "Por favor ingresa tu nombre"
   nombre = gets.chomp
   nombre
 end
@@ -219,33 +204,6 @@ def probar_matriz_dev
   end
 end
 
-def poner_barcos(matriz, num_barcos)
-  barcos_restantes = num_barcos
-  mostrar_tablero  = false
-  while barcos_restantes > 0
-
-   #pedir coordenadas
-   fila    = fila_determinada
-   columna = columna_determinada
-
-   if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
-      poner_algo_en_matriz(matriz, fila, columna, Barco)
-      barcos_restantes-=1
-      mostrar_tablero = true
-   else
-      system("clear")
-      puts "Posición ocupada, intenta en otra posición"
-      mostrar_tablero = false
-   end
-
-   if mostrar_tablero
-     system("clear")
-     puts "Tus barcos: "
-     puts
-     mostrar_matriz_dev(matriz)
-   end
-  end
-end
 
 def fila_determinada
    fila_dada    = pedir_fila
@@ -434,48 +392,98 @@ def mensaje_final(barcos_jugador_1, barcos_jugador_2)
   end
 end
 
+#        *funciones para mostrar el tablero
+def mostrar_matriz_dev(matriz)
+  for i in 0..matriz.length-1
+    print "|"
+    for x in 0..matriz[0].length-1
+      print "#{matriz[i][x]}|"
+    end
+    puts
+  end
+  puts"--------------------------"
+end
 
 
+#        *funciones relativas al inicio del juego
 
-=begin
-
-=end
-#------------------------------------------------------
-#def inicio_dev
-  system("clear")
-  puts "Bienvenido al juego!"
-
+def inicio
   #la matriz_jugador_1 es dondel el jugador 1 pondrá sus barcos
-  #pero el jugador 1 atacará la matriz_jugador_2 que es donde el
+  #pero el jugador 1 atacará la matriz_jugador_2, que es donde el
   #jugador 2 pondrá sus barcos
+
   matriz_jugador_1 = generar_matriz(10)
   matriz_jugador_2 = generar_matriz(10)
 
-  Nombre_jugador_1 = pedir_nombre
 
   num_barcos = pedir_num_barcos
+
   poner_barcos_random(matriz_jugador_2, num_barcos)
 
+
+  poner_barcos_como_sea(matriz_jugador_1, num_barcos, pedir_como_poner_barcos)
+
+  juego(matriz_jugador_1, matriz_jugador_2)
+end
+
+def poner_barcos_como_sea(matriz, num_barcos, respuesta)
+  if respuesta == "s"
+    poner_barcos_random(matriz, num_barcos)
+    puts "Se han puesto los barcos de modo aleatorio."
+  else
+    poner_barcos(matriz, num_barcos)
+    puts "Todos tus barcos están ordenados como lo pediste."
+  end
+end
+
+def pedir_como_poner_barcos
   system("clear")
   puts "Quieres poner tus barcos aleatoriamente? s/n"
   system("stty raw -echo")
   respuesta = STDIN.getc
   system("stty -raw echo")
-  if respuesta == "s"
-    poner_barcos_random(matriz_jugador_1, num_barcos)
-    system("clear")
-    puts "Los ceros representan nada, los 1 representan barcos"
-    puts
-    mostrar_matriz_dev(matriz_jugador_1)
-  else
-    poner_barcos(matriz_jugador_1, num_barcos)
-    puts "pusiste todos tus barcos"
+  return respuesta
+end
+
+def poner_barcos(matriz, num_barcos)
+  barcos_restantes = num_barcos
+
+  while barcos_restantes > 0
+
+   #pedir coordenadas
+   fila    = fila_determinada
+   columna = columna_determinada
+
+   if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
+      poner_algo_en_matriz(matriz, fila, columna, Barco)
+      barcos_restantes-=1
+
+   else
+      system("clear")
+      puts "Posición ocupada, intenta en otra posición"
+
+   end
   end
-  juego(matriz_jugador_1, matriz_jugador_2)
-#end
+end
 
-#inicio_dev
+def poner_barcos_random(matriz, num_barcos)
+  barcos_restantes = num_barcos
 
+  while barcos_restantes > 0
+   # no pedir sino poner
+   fila    = generar_coordenadas_random(matriz)
+   columna = generar_coordenadas_random(matriz)
 
+   if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
+      poner_algo_en_matriz(matriz, fila, columna, Barco)
+      barcos_restantes-=1
+   end
+  end
+end
+#                          ****MAIN****
 
+  system("clear")
+  puts "Bienvenido al juego!"
+  Nombre_jugador_1 = pedir_nombre
 
+  inicio
