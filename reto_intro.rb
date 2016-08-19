@@ -8,7 +8,6 @@ Nada             = 0
 Ataque_Fallido   = 2
 Barco_Hundido    = 3
 
-#hay que verificar antes de poner el barco
 def poner_barcos_random(matriz, num_barcos)
   barcos_restantes = num_barcos
   mostrar_tablero  = false
@@ -60,7 +59,6 @@ def validar_num_barcos(num_barcos)
   end
 end
 
-
 # cuenta la cantidad de algo en la matriz, por ejemplo Barcos, Ataque_Fallidos, Barco_Hundidos
 def contar_algo(matriz, algo)
   contador = 0
@@ -74,9 +72,6 @@ def contar_algo(matriz, algo)
   return contador
 end
 
-#num_barcos = pedir_num_barcos()
-#puts "num_barcos:#{num_barcos}"
-
 
 =begin
 cómo mostrar el tablero:
@@ -87,15 +82,12 @@ cómo mostrar el tablero:
 
 este método debe recibir una matriz, y sólo la muestra
 
-
-
 ahora, puede hacerse otro método sólo para el decorado, por ejemplo de letras y números
 
 F= falló un disparo
 H= hundió un barco
 ?= posicón no atacada aún
 =end
-
 
 def ataque_efectivo(objetivo)
     if objetivo == Barco
@@ -120,9 +112,10 @@ def determinar_sustituto_del_objetivo(objetivo)
     when Nada
       Ataque_Fallido
   end
-# Los sustitutos son:
-#  de Barco un Barco_Hundido
-#  de Nada  un Ataque_Fallido
+# Los sustitutos son lo que se pondrá en la matriz luego de un ataque,
+# dependiendo de qué había antes:
+#  -de Barco un Barco_Hundido
+#  -de Nada  un Ataque_Fallido
 end
 
 
@@ -130,13 +123,13 @@ def poner_algo_en_matriz(matriz,fila, columna, algo)
   matriz[fila][columna] = algo
 end
 
-# revisa una posción en la matriz y devuelve
+# revisa una posición en la matriz y devuelve su valor
 def devolver_posicion_en_matriz(matriz, fila, columna)
  return matriz[fila][columna]
 end
 
 # devuelve un array de coordenadas: [fila,columna]
-def determinar_coordenadas(fila, columna)
+def determinar_coordenadas_dev(fila, columna)
  fila    = determinar_fila(fila)
  columna = determinar_columna(columna)
  return [fila,columna]
@@ -170,8 +163,6 @@ def determinar_columna(columna)
   return columna-1
 end
 
-#validación pendiente
-#atención: no debe recibir un numero mayor a 10
 def validar_columna(columna)
   if columna < 1 || columna > 10
       return false
@@ -203,7 +194,7 @@ end
 
 
 # probar la funcionalidad de la matriz
-# bucle infini
+# bucle infinito
 def probar_matriz_dev
   mi_matriz = generar_matriz(10)
   system("clear")
@@ -215,7 +206,7 @@ def probar_matriz_dev
     puts "dame la fila en letras de la a..j: "
     fila=gets.chomp
 
-    array_coordenadas = determinar_coordenadas(fila, columna)
+    array_coordenadas = determinar_coordenadas_dev(fila, columna)
     poner_algo_en_matriz(mi_matriz,array_coordenadas[0], array_coordenadas[1], 1)
     mostrar_matriz_dev(mi_matriz)
     puts  "dime si sigo en minusculas s o n:"
@@ -226,7 +217,6 @@ def probar_matriz_dev
       sigue= false
     end
   end
-#hace lo que tiene que hacer
 end
 
 def poner_barcos(matriz, num_barcos)
@@ -349,6 +339,7 @@ def informar_ataque_invalido(objetivo)
     end
     puts "Intenta tu disparo de nuevo."
 end
+
 def informar_ataque_valido(objetivo)
   case objetivo
     when Barco
@@ -377,7 +368,7 @@ def juego(matriz_jugador_1,matriz_jugador_2)
 
     puts "afuera del, donde le tocaría a la compu"
     puts "la matriz enemiga"
-    puts
+    gitputs
     mostrar_matriz_dev(matriz_jugador_2)
 
     #jugando_jugador_2(matriz_jugador_1)
