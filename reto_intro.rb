@@ -121,19 +121,31 @@ def determinar_coordenadas_dev(fila, columna)
 end
 
 
-def validar_fila(fila)
-   if fila < "k" || fila > "t" || fila.length > 1
-      return false
-   else
-      return true
-   end
+def validar_fila(fila, modo_ataque)
+  if modo_ataque == true
+     if fila < "k" || fila > "t" || fila.length > 1
+        return false
+     else
+        return true
+     end
+  else
+     if fila < "a" || fila > "j" || fila.length > 1
+        return false
+     else
+        return true
+     end
+  end
 end
 
 
 #llamar validar_fila antes
 #recibe un string de largo 1
-def determinar_fila(fila_recibida)
-  letras    = ["k","l","m","n","o","p","q","r","s","t"]
+def determinar_fila(fila_recibida, modo_ataque)
+  if modo_ataque == true
+     letras    = ["k","l","m","n","o","p","q","r","s","t"]
+  else
+     letras    = ["a","b","c","d","e","f","g","h","i","j"]
+  end
  # numericos = [0,1,2,3,4,5,6,7,8,9]
    for i in 0..letras.length-1
      if fila_recibida == letras[i]
@@ -205,9 +217,9 @@ def probar_matriz_dev
 end
 
 
-def fila_determinada
-   fila_dada    = pedir_fila
-   return determinar_fila(fila_dada)
+def fila_determinada(mensaje, modo_ataque)
+   fila_dada    = pedir_fila(mensaje, modo_ataque)
+   return determinar_fila(fila_dada, modo_ataque)
 end
 
 def columna_determinada
@@ -223,13 +235,13 @@ def pedir_algo(mensaje)
 end
 
 #devuelve una fila segura
-def pedir_fila
+def pedir_fila(mensaje, modo_ataque)
   fila_correcta=false
 
   intentos = 0
   until fila_correcta do
-    fila          = pedir_algo("una fila entre k y t.")
-    fila_correcta = validar_fila(fila)
+    fila          = pedir_algo("una fila #{mensaje}")
+    fila_correcta = validar_fila(fila, modo_ataque)
     intentos += 1
 
     if intentos > 3
@@ -263,7 +275,7 @@ end
 def turno_jugador_1(matriz)
   puts "Tu turno #{Nombre_jugador_1}!"
   #pedir coordenadas
-  fila    = fila_determinada
+  fila    = fila_determinada(" entre la 'k' y la 't'.", true)
   columna = columna_determinada
 
   objetivo = devolver_posicion_en_matriz(matriz, fila, columna)
@@ -360,15 +372,11 @@ def juego(matriz_jugador_1,matriz_jugador_2)
     jugando_jugador_1(matriz_jugador_2)
     barcos_jugador_2 =contar_algo(matriz_jugador_2, Barco)
 
-    puts "Cambio de turno, en la funcion juego"
-    puts "la matriz enemiga"
     puts
     mostrar_matriz(matriz_jugador_2, "J", true)
     puts
-    puts "tu matriz"
     puts
     mostrar_matriz(matriz_jugador_1, "@", false)
-    puts
 
     jugando_jugador_2(matriz_jugador_1)
     barcos_jugador_1 = contar_algo(matriz_jugador_1, Barco)
@@ -401,7 +409,10 @@ def mostrar_matriz(matriz, fila_letra, oculto)
 
   if oculto == true
     imprimir_leyenda_1
+    puts "  *Has hundido #{contar_algo(matriz,Barco_Hundido)} de los barcos enemigos,"
+    puts "   hay todavía al menos #{contar_algo(matriz,Barco )}"
   end
+
   print_cintillo_numerico(matriz.length)
   for i in 0..matriz.length-1
     print "#{espacios}#{fila_letra=fila_letra.next}"
@@ -422,6 +433,8 @@ def mostrar_matriz(matriz, fila_letra, oculto)
 
   if oculto == false
     imprimir_leyenda_2
+    puts "  *El enemigo ha hundido #{contar_algo(matriz,Barco_Hundido)} de tus barcos,"
+    puts "   aun cuentas con #{contar_algo(matriz,Barco)} de ellos. "
   end
 end
 
@@ -499,6 +512,8 @@ def poner_barcos_como_sea(matriz, num_barcos, respuesta)
   if respuesta == "s"
     poner_barcos_random(matriz, num_barcos)
     puts "Se han puesto los barcos de modo aleatorio."
+    mostrar_matriz(matriz, "@", false)
+
   else
     poner_barcos(matriz, num_barcos)
     puts "Todos tus barcos están ordenados como lo pediste."
@@ -520,11 +535,12 @@ def poner_barcos(matriz, num_barcos)
   while barcos_restantes > 0
 
    #pedir coordenadas
-   fila    = fila_determinada
+   fila    = fila_determinada( "entre la 'a' y la 'j'.", false)
    columna = columna_determinada
 
    if devolver_posicion_en_matriz(matriz, fila, columna) == Nada
       poner_algo_en_matriz(matriz, fila, columna, Barco)
+      mostrar_matriz(matriz, "@", false)
       barcos_restantes-=1
 
    else
