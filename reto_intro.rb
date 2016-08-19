@@ -393,17 +393,37 @@ def mensaje_final(barcos_jugador_1, barcos_jugador_2)
 end
 
 #        *funciones para mostrar el tablero
-def mostrar_matriz_dev(matriz)
+def mostrar_matriz_dev(matriz, fila_letra)
+# recibe fila_letra como punto de inicio de las letras
+# para las filas '@' para comenzar desde 'A' y 'J'
+# para comenzar desde 'K'
+  espacios=" "*20
+
+  print_cintillo_numerico(matriz.length)
   for i in 0..matriz.length-1
+
+
+    print "#{espacios}#{fila_letra=fila_letra.next}"
     print "|"
     for x in 0..matriz[0].length-1
       print "#{matriz[i][x]}|"
     end
+    print fila_letra
     puts
+
   end
-  puts"--------------------------"
+  print_cintillo_numerico(matriz.length)
 end
 
+def print_cintillo_numerico(largo)
+  espacios=" "*20
+  print " #{espacios}_"
+
+  for i in 0..largo-1
+    print "#{i}_"
+  end
+  puts
+end
 
 #        *funciones relativas al inicio del juego
 
@@ -481,9 +501,13 @@ def poner_barcos_random(matriz, num_barcos)
   end
 end
 #                          ****MAIN****
+a= generar_matriz 10
+mostrar_matriz_dev(a,"@")
+=begin
 
   system("clear")
   puts "Bienvenido al juego!"
   Nombre_jugador_1 = pedir_nombre
 
   inicio
+=end
