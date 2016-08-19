@@ -97,21 +97,34 @@ H= hundió un barco
 =end
 
 
-def ataque_fallido(matriz, fila, columna)
-    if matriz[fila][columna] == Barco
-       false
-    else
+def ataque_efectivo(objetivo)
+    if objetivo == Barco
        true
+    else
+       false
     end
 end
 
-def ataque_valido(matriz, fila, columna)
-  if matriz[fila][columna] == Ataque_Fallido  || matriz[fila][columna] == Barco_Hundido
+def ataque_valido(objetivo)
+  if objetivo == Ataque_Fallido  || objetivo == Barco_Hundido
       false
   else
       true
   end
 end
+
+def determinar_sustituto_del_objetivo(objetivo)
+  case objetivo
+    when Barco
+      Barco_Hundido
+    when Nada
+      Ataque_Fallido
+  end
+# Los sustitutos son:
+#  de Barco un Barco_Hundido
+#  de Nada  un Ataque_Fallido
+end
+
 
 def poner_algo_en_matriz(matriz,fila, columna, algo)
   matriz[fila][columna] = algo
@@ -257,6 +270,7 @@ end
 def pedir_algo(mensaje)
   puts "Por favor, ingrese #{mensaje}"
   respuesta = gets.chomp.downcase
+  system("clear")
   return respuesta
 end
 
@@ -294,17 +308,56 @@ def jugando_jugador_1(matriz)
 
     while jugador_1_no_ha_fallado
       jugador_1_no_ha_fallado = turno_jugador_1(matriz)
+      "jugando_jugador_1, en el while"
     end
 end
 
 
 def turno_jugador_1(matriz)
+  puts "en turno_jugador_1: Tu turno!"
   #pedir coordenadas
   fila    = fila_determinada
   columna = columna_determinada
 
-  #esto es lo que devovería al final
-  return ataque_fallo(matriz, fila, columna)
+  objetivo = devolver_posicion_en_matriz(matriz, fila, columna)
+  determinar_ataque(matriz, fila, columna, objetivo)
+  #si el ataque no fue valido está perdiendo el turno
+  if ataque_valido(objetivo) == false
+    return true
+  end
+  return ataque_efectivo(objetivo)
+end
+
+def determinar_ataque(matriz, fila, columna, objetivo)
+  if ataque_valido(objetivo)
+    sustituto= determinar_sustituto_del_objetivo(objetivo)
+    poner_algo_en_matriz(matriz, fila, columna,sustituto)
+    informar_ataque_valido(objetivo)
+  else
+    informar_ataque_invalido(objetivo)
+  end
+end
+
+def informar_ataque_invalido(objetivo)
+    system("clear")
+    print "La posición a la que apuntaste era "
+    case objetivo
+      when Ataque_Fallido
+        puts "una en la que ya habías intentado antes."
+      when Barco_Hundido
+        puts "un barco hundido."
+    end
+    puts "Intenta tu disparo de nuevo."
+end
+def informar_ataque_valido(objetivo)
+  case objetivo
+    when Barco
+      puts "Le diste!, has hundido un barco."
+      puts "Tomaste la ventaja. Puedes disparar de nuevo."
+    when Nada
+      puts "Fallaste, tu disparo se perdío en la nada."
+      puts "El enemigo se prepara para disparar."
+  end
 end
 
 def jugando_jugador_2(matriz)
@@ -322,11 +375,17 @@ def juego(matriz_jugador_1,matriz_jugador_2)
     jugando_jugador_1(matriz_jugador_2)
     barcos_jugador_2 =contar_algo(matriz_jugador_2, Barco)
 
-    jugando_jugador_2(matriz_jugador_1)
+    puts "afuera del, donde le tocaría a la compu"
+    puts "la matriz enemiga"
+    puts
+    mostrar_matriz_dev(matriz_jugador_2)
+
+    #jugando_jugador_2(matriz_jugador_1)
     barcos_jugador_1 = contar_algo(matriz_jugador_1, Barco)
 
     if barcos_jugador_1 == 0 || barcos_jugador_2 == 0
       nadie_ha_perdido = false
+      mensaje_final(barcos_jugador_1, barcos_jugador_2)
     end
   end
 end
@@ -346,6 +405,9 @@ end
 
 
 
+=begin
+
+=end
 #------------------------------------------------------
 #def inicio_dev
   system("clear")
@@ -360,9 +422,8 @@ end
   Nombre_jugador_1 = pedir_nombre
 
   num_barcos = pedir_num_barcos
-  puts "hola"
   poner_barcos_random(matriz_jugador_2, num_barcos)
-  puts "hey"
+
   system("clear")
   puts "Quieres poner tus barcos aleatoriamente? s/n"
   system("stty raw -echo")
@@ -378,6 +439,7 @@ end
     poner_barcos(matriz_jugador_1, num_barcos)
     puts "pusiste todos tus barcos"
   end
+  juego(matriz_jugador_1, matriz_jugador_2)
 #end
 
 #inicio_dev
@@ -385,6 +447,3 @@ end
 
 
 
-=begin
-
-=end
