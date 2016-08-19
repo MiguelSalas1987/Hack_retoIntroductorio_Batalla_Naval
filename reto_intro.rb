@@ -1,4 +1,4 @@
-#valores dentro de la matriz
+#valores constantes dentro de la matriz
   #Barco: un barco
   #Nada: espacio vacío
   #Falli: disparo que falló
@@ -173,13 +173,13 @@ end
 
 
 def pedir_nombre
-  puts "Por favor ingrese su nombre"
+  puts "Por favor ingresa su nombre"
   nombre = gets.chomp
   nombre
 end
 
 def generar_coordenadas_random(matriz)
-  rand(matriz.length)
+   return rand(matriz.length)
 end
 
 def mostrar_matriz_dev(matriz)
@@ -298,19 +298,19 @@ def jugando_jugador_1(matriz)
 
     while jugador_1_no_ha_fallado
       jugador_1_no_ha_fallado = turno_jugador_1(matriz)
-      "jugando_jugador_1, en el while"
     end
 end
 
 
 def turno_jugador_1(matriz)
-  puts "en turno_jugador_1: Tu turno!"
+  puts "Tu turno #{Nombre_jugador_1}!"
   #pedir coordenadas
   fila    = fila_determinada
   columna = columna_determinada
 
   objetivo = devolver_posicion_en_matriz(matriz, fila, columna)
   determinar_ataque(matriz, fila, columna, objetivo)
+  informar_ataque(objetivo)
   #si el ataque no fue valido está perdiendo el turno
   if ataque_valido(objetivo) == false
     return true
@@ -320,12 +320,22 @@ end
 
 def determinar_ataque(matriz, fila, columna, objetivo)
   if ataque_valido(objetivo)
+    asignar_ataque_en_matriz(matriz, fila, columna, objetivo)
+  end
+end
+
+def informar_ataque(objetivo)
+  if ataque_valido(objetivo)
+      informar_ataque_valido(objetivo)
+  else
+      informar_ataque_invalido(objetivo)
+  end
+end
+
+
+def asignar_ataque_en_matriz(matriz, fila, columna, objetivo)
     sustituto= determinar_sustituto_del_objetivo(objetivo)
     poner_algo_en_matriz(matriz, fila, columna,sustituto)
-    informar_ataque_valido(objetivo)
-  else
-    informar_ataque_invalido(objetivo)
-  end
 end
 
 def informar_ataque_invalido(objetivo)
@@ -355,9 +365,35 @@ def jugando_jugador_2(matriz)
     jugador_2_no_ha_fallado = true
 
     while jugador_2_no_ha_fallado
-      turno_computadora(matriz)
+     jugador_2_no_ha_fallado = turno_computadora(matriz)
     end
 end
+
+def turno_computadora(matriz)
+  fila    = generar_coordenadas_random(matriz)
+  columna = generar_coordenadas_random(matriz)
+
+  objetivo = devolver_posicion_en_matriz(matriz, fila, columna)
+  determinar_ataque(matriz, fila, columna, objetivo)
+
+  informar_ataque_valido_enemigo(objetivo)
+
+  if ataque_valido(objetivo) == false
+    return true
+  end
+  return ataque_efectivo(objetivo)
+end
+
+def informar_ataque_valido_enemigo(objetivo)
+  case objetivo
+    when Barco
+      puts "El ataque enemigo ha alcanzado uno de tus barcos!, el barco se hunde."
+      puts "El enemigo tomó la ventaja. Cuidado, se dispone a atacar de nuevo..."
+    when Nada
+      puts "El enemigo ha intentado atacarte, pero falló, su disparo fue inutil."
+  end
+end
+
 
 def juego(matriz_jugador_1,matriz_jugador_2)
   nadie_ha_perdido = true
@@ -366,12 +402,17 @@ def juego(matriz_jugador_1,matriz_jugador_2)
     jugando_jugador_1(matriz_jugador_2)
     barcos_jugador_2 =contar_algo(matriz_jugador_2, Barco)
 
-    puts "afuera del, donde le tocaría a la compu"
+    puts "Cambio de turno, en la funcion juego"
     puts "la matriz enemiga"
-    gitputs
+    puts
     mostrar_matriz_dev(matriz_jugador_2)
+    puts
+    puts "tu matriz"
+    puts
+    mostrar_matriz_dev(matriz_jugador_1)
+    puts
 
-    #jugando_jugador_2(matriz_jugador_1)
+    jugando_jugador_2(matriz_jugador_1)
     barcos_jugador_1 = contar_algo(matriz_jugador_1, Barco)
 
     if barcos_jugador_1 == 0 || barcos_jugador_2 == 0
