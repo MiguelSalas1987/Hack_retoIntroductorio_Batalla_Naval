@@ -302,7 +302,6 @@ def informar_ataque(objetivo)
   end
 end
 
-
 def asignar_ataque_en_matriz(matriz, fila, columna, objetivo)
     sustituto= determinar_sustituto_del_objetivo(objetivo)
     poner_algo_en_matriz(matriz, fila, columna,sustituto)
@@ -321,13 +320,24 @@ def informar_ataque_invalido(objetivo)
 end
 
 def informar_ataque_valido(objetivo)
+  system("clear")
   case objetivo
     when Barco
-      puts "Le diste!, has hundido un barco."
-      puts "Tomaste la ventaja. Puedes disparar de nuevo."
+      puts ["Le diste!, has hundido un barco.",
+          "Alcanzaste a un barco enemigo, se hunde poco a poco",
+          "Un disparo certero. hundiste un barco enemigo."].sample
+      puts ["Tomaste la ventaja. Puedes disparar de nuevo.",
+            "Tienes la ventaja, dispara de nuevo!",
+             "Ganas un turno adicional!"].sample
     when Nada
-      puts "Fallaste, tu disparo se perdío en la nada."
-      puts "El enemigo se prepara para disparar."
+      puts ["Fallaste, tu disparo se perdío en la nada.",
+             "Tu disparo fue inutil",
+            "Tu disparo dio en el agua.",
+             "Perdiste ese disparo.",
+             "Fallaste el objetivo."].sample
+      puts ["El enemigo se prepara para disparar.",
+            "Se viene el ataque enemigo",
+             "Ahora vienen por ti."].sample
   end
 end
 
@@ -357,16 +367,26 @@ end
 def informar_ataque_valido_enemigo(objetivo)
   case objetivo
     when Barco
-      puts "El ataque enemigo ha alcanzado uno de tus barcos!, el barco se hunde."
-      puts "El enemigo tomó la ventaja. Cuidado, se dispone a atacar de nuevo..."
+      puts ["El ataque enemigo ha alcanzado uno de tus barcos!, el barco se hunde.",
+            "Perdiste un barco. El enemigo acertó.","Un disparo ha alcanzado uno de tus barcos, tu barco se hundió.",
+            "Hundieron uno de tus barcos.","Uno de tus barcos se hunde"].sample
+      puts ["El enemigo tomó la ventaja. Cuidado, se dispone a atacar de nuevo...",
+            "El enemigo ataca de nuevo","El enemigo ganó un disparo extra."].sample
     when Nada
-      puts "El enemigo ha intentado atacarte, pero falló, su disparo fue inutil."
+      puts ["El enemigo ha intentado atacarte, pero falló, su disparo fue inutil.",
+            "El disparo enemigo dió en el agua.", "Tuviste suerte, el enemigo falló.",
+            "Esta vez el enemigo no pudo alcanzarte.", "Fue un ataque fallido",
+            "El enemigo perdió su disparo.", "Ninguno de tus barcos fue hundido",
+            "No pudieron hundir ninguno de tus barcos."].sample
   end
 end
 
 
 def juego(matriz_jugador_1,matriz_jugador_2)
   nadie_ha_perdido = true
+
+  puts "Comienza la pelea!"
+
   while nadie_ha_perdido
 
     jugando_jugador_1(matriz_jugador_2)
@@ -375,11 +395,11 @@ def juego(matriz_jugador_1,matriz_jugador_2)
     puts
     mostrar_matriz(matriz_jugador_2, "J", true)
     puts
-    puts
-    mostrar_matriz(matriz_jugador_1, "@", false)
 
     jugando_jugador_2(matriz_jugador_1)
     barcos_jugador_1 = contar_algo(matriz_jugador_1, Barco)
+    puts
+    mostrar_matriz(matriz_jugador_1, "@", false)
 
     if barcos_jugador_1 == 0 || barcos_jugador_2 == 0
       nadie_ha_perdido = false
