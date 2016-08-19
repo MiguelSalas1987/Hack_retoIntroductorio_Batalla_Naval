@@ -228,7 +228,7 @@ def columna_determinada
 end
 
 def pedir_algo(mensaje)
-  puts "Por favor, ingrese #{mensaje}"
+  puts "Por favor, ingresa #{mensaje}"
   respuesta = gets.chomp.downcase
   system("clear")
   return respuesta
@@ -462,7 +462,7 @@ def print_cintillo_numerico(largo)
   espacios=" "*20
   print " #{espacios}_"
 
-  for i in 0..largo-1
+  for i in 1..largo
     print "#{i}_"
   end
   puts
